@@ -6,6 +6,7 @@
   <script src='d3.min.js'></script>
   <script src="highcharts.js" charset="utf-8"></script>
   <body>
+    <div id="fsDOI"></div>
     <div id="result" name="result" style="width:100%; height:500px">
     </div>
 <script>
@@ -24,10 +25,11 @@
       var parsed = parseCSV(csvdata, "Year", "Body_Count", true);
       var options = setupOptions("Body count in films by year", "Year", "Total Body Count");
       options.xAxis.categories = parsed.x;
-      options.series = parsed.y;
-      console.log(JSON.stringify(options));
+      options.series[0] = parsed.y;
       
       var chart = new Highcharts.Chart(options);
+
+      $('#fsDOI').html("<a href='"+data.items[0].figshare_url+"'>"+data.items[0].figshare_url+"</a>");
     });
   });
 /*
@@ -87,7 +89,6 @@
      var options = {
         chart: {
 	    renderTo: 'result',
-//            defaultSeriesType: 'column',
             type: 'column'
         },
         title: {
