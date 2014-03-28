@@ -32,59 +32,7 @@
       $('#fsDOI').html("<a href='"+data.items[0].figshare_url+"'>"+data.items[0].figshare_url+"</a>");
     });
   });
-/*
-  function parseCSV(csvstring, xHeaderSelect, yHeaderSelect) {
-    var options = setupOptions(yHeaderSelect + " by " + xHeaderSelect, xHeaderSelect, yHeaderSelect);
-    
-    var dataObj = {};
-    dataObj[xHeaderSelect] = [];
-    dataObj[yHeaderSelect] = [];
-    
-    var selectedXColumnNum = 0;
-    var selectedYColumnNum = 0;
-
-    // Split the lines
-    var lines = csvstring.split('\n');
-    
-    // Iterate over the lines and add categories or series
-    $.each(lines, function(lineNo, line) {
-        var items = line.split(',');
-        
-        // header line containes categories
-        // get the column indices of each of the selected column headers
-        if (lineNo == 0) {
-            $.each(items, function(itemNo, item) {
-                //if (itemNo > 0) options.xAxis.categories.push(item);
-                if (itemNo > 0) {
-                    if (item === xHeaderSelect) {
-                      selectedXColumnNum = itemNo;
-                    }
-                    else if (item === yHeaderSelect) {
-                      selectedYColumnNum = itemNo;
-                    }
-                }
-            });
-        }
-        //process each data line
-        else {
-            var series = {
-                data: []
-            };
-            $.each(items, function(itemNo, item) {
-                if (itemNo == selectedXColumnNum) {
-                    //series.name = item;
-                    dataObj[xHeaderSelect]
-                } else if (itemNo == selectedYColumnNum) {
-                    
-                    //series.data.push(parseFloat(item));
-                }
-            });
-            
-            //options.series.push(series);
-        }
-    });
-  }
-*/
+  
   function setupOptions(title, xlabel, ylabel) {
      var options = {
         chart: {
@@ -128,8 +76,13 @@
       .entries(data);
     }
     else {
-      //todo
-      
+      $.each(d3.entries(data), function(index, value) {
+        console.log(JSON.stringify(value));
+        var barObj = {};
+        barObj.key = value.value[xHeader];
+        barObj.values = value.value[yHeader];      
+        nested.push(barObj);
+      });
     }
     
     $.each(nested, function(index, value) {
@@ -139,43 +92,9 @@
 
     parsed.x = xCategories;
     parsed.y = ySeries;
-
+    console.log(JSON.stringify(parsed));
     return parsed;
   }
-
-  /*
-  var w = 20,
-      h = 500;
- 
-  var x = d3.scale.linear()
-     .adomain([0, 1])
-     .range([0, w]);
- 
-  var y = d3.scale.linear()
-     //need to work this out automatically
-     .domain([0, 5000])
-     .rangeRound([0, h]);
-
-   var chart = d3.select($("#result")[0]).append("svg")
-     .attr("class", "chart")
-     .attr("width", w * nested.length - 1)
-     .attr("height", h);
-
-   chart.selectAll("rect")
-     .data(nested)
-   .enter().append("rect")
-     .attr("x", function(d, i) { return x(i) - .5; })
-     .attr("y", function(d) { return h - y(d.values.total_body_count) - .5; })
-     .attr("width", w)
-     .attr("height", function(d) { return y(d.values.total_body_count); });
-
- chart.append("line")
-     .attr("x1", 0)
-     .attr("x2", w * nested.length)
-     .attr("y1", h - .5)
-     .attr("y2", h - .5)
-     .style("stroke", "#000");
-*/
 
 </script>
 </body>
