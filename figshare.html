@@ -1,0 +1,83 @@
+<html>
+  <head>
+    <title>Home</title>
+  </head>
+  <script src='jquery.min.js'></script>
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>  
+<body>
+    <div id="result" name="result" class="homepage-wrapper">
+    </div>
+<script>
+  var fsAPI = "http://api.figshare.com/v1/articles/10.6084/m9.figshare.889719";
+  $.getJSON( fsAPI, {
+    tags: "figshare",
+    tagmode: "any",
+    format: "json"
+   })
+  .done(function( data ) {
+    var csvurl = data.items[0].files[0].download_url.replace("http://","");
+    $.get("http://www.corsproxy.com/"+csvurl, parseCSV);
+  });
+ 
+  var nested = [];
+
+  function parseCSV(csvstring) {
+    var dataset = [];
+    var data = d3.csv.parse(csvstring);
+    nested = d3.nest()
+      .key(function(d) { return d["Year"]; }).sortKeys(d3.ascending)
+      .rollup(function(leaves) { return {"total_body_count": d3.sum(leaves, function(d) {return parseFloat(d["Body_Count"]);})} })
+      .entries(data);
+
+    console.log(JSON.stringify(nested));
+  
+  var w = 20,
+      h = 500;
+ 
+  var x = d3.scale.linear()
+     .domain([0, 1])
+     .range([0, w]);
+ 
+  var y = d3.scale.linear()
+     //need to work this out automatically
+     .domain([0, 5000])
+     .rangeRound([0, h]);
+
+   var chart = d3.select($("#result")[0]).append("svg")
+     .attr("class", "chart")
+     .attr("width", w * nested.length - 1)
+     .attr("height", h);
+
+   chart.selectAll("rect")
+     .data(nested)
+   .enter().append("rect")
+     .attr("x", function(d, i) { return x(i) - .5; })
+     .attr("y", function(d) { return h - y(d.values.total_body_count) - .5; })
+     .attr("width", w)
+     .attr("height", function(d) { return y(d.values.total_body_count); });
+
+/*
+            var barValues = chart.append("g")
+                .attr("class", "bar-values");
+
+            barValues.selectAll("text")
+                .data(nested)
+                    .enter().append("text")
+                .attr("x", function(d, i) {
+                    return ((i+1));// * x.rangeBand());
+                })
+                .attr("y", 0)
+                .attr("dy", -5)
+                .attr("text-anchor", "middle")
+                .text(function(d) {return d.key;});
+*/
+ chart.append("line")
+     .attr("x1", 0)
+     .attr("x2", w * nested.length)
+     .attr("y1", h - .5)
+     .attr("y2", h - .5)
+     .style("stroke", "#000");
+}
+</script>
+</body>
+</html>
