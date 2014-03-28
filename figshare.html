@@ -15,7 +15,12 @@
 <label id="error"></label>
 <div style="padding:16px;">
 URL: <input type="textbox" id='figshare_url' value="http://api.figshare.com/v1/articles/10.6084/m9.figshare.889719"></input>
+<br>
+X Header Name: <input type="textbox" id="headerx" value="Year"></input>
+<br>
+Y Header Name: <input type="textbox" id="headery" value="Body_Count"></input>
 </div>
+
 <button id="GetData">Vis me a Fig</button> 
 <button id="GetFigure" style="display:none">Export My Figure</button> 
     </div>
@@ -60,7 +65,11 @@ $( document ).ready(function()
     .done(function( data ) {
       var csvurl = data.items[0].files[0].download_url.replace("http://","");
       $.get("http://www.corsproxy.com/"+csvurl, function(csvdata) {
-        var parsed = parseCSV(csvdata, "Year", "Body_Count", true);
+	
+	var xhead = $('#headerx').val();
+	var yhead = $('#headery').val();
+        var parsed = parseCSV(csvdata, xhead, yhead, true);
+	alert(parsed.x[0]);
         var options = setupOptions("Body count in films by year", "Year", "Total Body Count");
         options.xAxis.categories = parsed.x;
         options.series[0] = parsed.y;
