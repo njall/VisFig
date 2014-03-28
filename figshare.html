@@ -3,11 +3,15 @@
     <title>Home</title>
   </head>
   <script src='jquery.min.js'></script>
-<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>  
-<body>
-    <div id="result" name="result" class="homepage-wrapper">
+  <script src='d3.min.js'></script>
+  <script src="highcharts.js" charset="utf-8"></script>
+  <body>
+    <div id="result" name="result" style="width:100%; height:500px">
     </div>
 <script>
+
+  var chartOptions = {};
+
   var fsAPI = "http://api.figshare.com/v1/articles/10.6084/m9.figshare.889719";
   $.getJSON( fsAPI, {
     tags: "figshare",
@@ -16,26 +20,134 @@
    })
   .done(function( data ) {
     var csvurl = data.items[0].files[0].download_url.replace("http://","");
-    $.get("http://www.corsproxy.com/"+csvurl, parseCSV);
+    $.get("http://www.corsproxy.com/"+csvurl, function(csvdata) {
+      var parsed = parseCSV(csvdata, "Year", "Body_Count", true);
+      var options = setupOptions("Body count in films by year", "Year", "Total Body Count");
+      options.xAxis.categories = parsed.x;
+      options.series = parsed.y;
+      console.log(JSON.stringify(options));
+      
+      var chart = new Highcharts.Chart(options);
+    });
   });
- 
-  var nested = [];
+/*
+  function parseCSV(csvstring, xHeaderSelect, yHeaderSelect) {
+    var options = setupOptions(yHeaderSelect + " by " + xHeaderSelect, xHeaderSelect, yHeaderSelect);
+    
+    var dataObj = {};
+    dataObj[xHeaderSelect] = [];
+    dataObj[yHeaderSelect] = [];
+    
+    var selectedXColumnNum = 0;
+    var selectedYColumnNum = 0;
 
-  function parseCSV(csvstring) {
-    var dataset = [];
+    // Split the lines
+    var lines = csvstring.split('\n');
+    
+    // Iterate over the lines and add categories or series
+    $.each(lines, function(lineNo, line) {
+        var items = line.split(',');
+        
+        // header line containes categories
+        // get the column indices of each of the selected column headers
+        if (lineNo == 0) {
+            $.each(items, function(itemNo, item) {
+                //if (itemNo > 0) options.xAxis.categories.push(item);
+                if (itemNo > 0) {
+                    if (item === xHeaderSelect) {
+                      selectedXColumnNum = itemNo;
+                    }
+                    else if (item === yHeaderSelect) {
+                      selectedYColumnNum = itemNo;
+                    }
+                }
+            });
+        }
+        //process each data line
+        else {
+            var series = {
+                data: []
+            };
+            $.each(items, function(itemNo, item) {
+                if (itemNo == selectedXColumnNum) {
+                    //series.name = item;
+                    dataObj[xHeaderSelect]
+                } else if (itemNo == selectedYColumnNum) {
+                    
+                    //series.data.push(parseFloat(item));
+                }
+            });
+            
+            //options.series.push(series);
+        }
+    });
+  }
+*/
+  function setupOptions(title, xlabel, ylabel) {
+     var options = {
+        chart: {
+	    renderTo: 'result',
+//            defaultSeriesType: 'column',
+            type: 'column'
+        },
+        title: {
+            text: title
+        },
+        xAxis: {
+            categories: []
+        },
+        yAxis: {
+            title: {
+                text: ylabel
+            }
+        },
+        series: []
+    }
+    return options;
+  }
+
+  function parseCSV(csvstring, xHeader, yHeader, aggregateY) {
+    var parsed = {};
+    var xCategories = [];
+    var ySeries = {name: yHeader, data:[]};
+
     var data = d3.csv.parse(csvstring);
-    nested = d3.nest()
-      .key(function(d) { return d["Year"]; }).sortKeys(d3.ascending)
-      .rollup(function(leaves) { return {"total_body_count": d3.sum(leaves, function(d) {return parseFloat(d["Body_Count"]);})} })
-      .entries(data);
+    var nested = [];
 
-    console.log(JSON.stringify(nested));
-  
+    if(aggregateY) {
+      var aggHeader = "Total_"+yHeader;
+      var rolled = {};
+      rolled[aggHeader] = "";
+      nested = d3.nest().key(function(d) { return d[xHeader]; }).sortKeys(d3.ascending).rollup(function(leaves) {
+        rolled[aggHeader] = d3.sum(leaves, function(d) { 
+          return parseFloat(d[yHeader]);
+        });
+        return rolled[aggHeader];
+      })
+      .entries(data);
+    }
+    else {
+      //todo
+      
+    }
+    
+    $.each(nested, function(index, value) {
+      xCategories.push(value.key);
+      ySeries.data.push(value.values);
+    });
+
+    parsed.x = xCategories;
+    parsed.y = ySeries;
+
+    return parsed;
+  }
+
+  /*
   var w = 20,
       h = 500;
  
   var x = d3.scale.linear()
-     .domain([0, 1])
+     .adomain([0, 1])
      .range([0, w]);
  
   var y = d3.scale.linear()
@@ -56,28 +168,14 @@
      .attr("width", w)
      .attr("height", function(d) { return y(d.values.total_body_count); });
 
-/*
-            var barValues = chart.append("g")
-                .attr("class", "bar-values");
-
-            barValues.selectAll("text")
-                .data(nested)
-                    .enter().append("text")
-                .attr("x", function(d, i) {
-                    return ((i+1));// * x.rangeBand());
-                })
-                .attr("y", 0)
-                .attr("dy", -5)
-                .attr("text-anchor", "middle")
-                .text(function(d) {return d.key;});
-*/
  chart.append("line")
      .attr("x1", 0)
      .attr("x2", w * nested.length)
      .attr("y1", h - .5)
      .attr("y2", h - .5)
      .style("stroke", "#000");
-}
+*/
+
 </script>
 </body>
 </html>
