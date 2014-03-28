@@ -8,31 +8,71 @@
   <body>
     <div id="fsDOI"></div>
     <div id="result" name="result" style="width:100%; height:500px">
+
+<h4>Try with my dataset</h4> 
+ 
+<label id="msg"></label>
+<label id="error"></label>
+
+<div style="padding:16px;">
+URL: <input type="textbox" id='figshare_url'></input>
+</div>
+<button id="GetData">Vis me a Fig</button> 
+<button id="GetFigure" style="display:none">Export My Figure</button> 
     </div>
 <script>
-
-  var chartOptions = {};
-
-  var fsAPI = "http://api.figshare.com/v1/articles/10.6084/m9.figshare.889719";
-  $.getJSON( fsAPI, {
-    tags: "figshare",
-    tagmode: "any",
-    format: "json"
-   })
-  .done(function( data ) {
-    var csvurl = data.items[0].files[0].download_url.replace("http://","");
-    $.get("http://www.corsproxy.com/"+csvurl, function(csvdata) {
-      var parsed = parseCSV(csvdata, "Year", "Body_Count", true);
-      var options = setupOptions("Body count in films by year", "Year", "Total Body Count");
-      options.xAxis.categories = parsed.x;
-      options.series[0] = parsed.y;
-      
-      var chart = new Highcharts.Chart(options);
-
-      $('#fsDOI').html("<a href='"+data.items[0].figshare_url+"'>"+data.items[0].figshare_url+"</a>");
-    });
+$( document ).ready(function()
+{
+  $("#GetData").click(function () {
+ 	$('#msg').html($('#figshare_url').val());
+	var url = $('#figshare_url').val();
+	try {
+	  plotFromFigshare(url);
+	  $('GetFigure').style.display = 'show';
+	}
+	catch(error) {
+	  //alert('ERROR',error);
+	}
   });
-  
+
+  $("#GetFigure").click(function () {
+ 	$('#msg').html($('#figshare_url').val());
+	var url = $('#figshare_url').val();
+	try {
+	  plotFromFigshare(url);
+	}
+	catch(error) {
+	  if (error != null){ 
+	  	alert('ERROR',error);
+	  }
+	}
+  });
+});
+
+  function plotFromFigshare(url) {
+    var chartOptions = {};
+
+    var fsAPI = url;//"http://api.figshare.com/v1/articles/10.6084/m9.figshare.889719";
+    $.getJSON( fsAPI, {
+      tags: "figshare",
+      tagmode: "any",
+      format: "json"
+     })
+    .done(function( data ) {
+      var csvurl = data.items[0].files[0].download_url.replace("http://","");
+      $.get("http://www.corsproxy.com/"+csvurl, function(csvdata) {
+        var parsed = parseCSV(csvdata, "Year", "Body_Count", true);
+        var options = setupOptions("Body count in films by year", "Year", "Total Body Count");
+        options.xAxis.categories = parsed.x;
+        options.series[0] = parsed.y;
+      
+        var chart = new Highcharts.Chart(options);
+
+        $('#fsDOI').html("<a href='"+data.items[0].figshare_url+"'>"+data.items[0].figshare_url+"</a>");
+      });
+    });
+  }
+
   function setupOptions(title, xlabel, ylabel) {
      var options = {
         chart: {
