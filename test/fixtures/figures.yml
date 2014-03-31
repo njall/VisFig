@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  doi: MyString
+  title: MyText
+  dataSet: MyString
+  columnHeadings: MyText
+  visualisation: 
+
+two:
+  doi: MyString
+  title: MyText
+  dataSet: MyString
+  columnHeadings: MyText
+  visualisation: 

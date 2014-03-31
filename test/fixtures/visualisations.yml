@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  libName: MyText
+  libLocation: MyText
+  description: MyText
+  minNoOfParameters: 1
+  maxNoOfParameters: 1
+
+two:
+  libName: MyText
+  libLocation: MyText
+  description: MyText
+  minNoOfParameters: 1
+  maxNoOfParameters: 1

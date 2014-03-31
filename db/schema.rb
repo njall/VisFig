@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140327231044) do
+ActiveRecord::Schema.define(:version => 20140331154116) do
 
   create_table "data", :force => true do |t|
     t.string   "figshare_url"
@@ -19,6 +19,28 @@ ActiveRecord::Schema.define(:version => 20140327231044) do
     t.text     "uploader"
     t.datetime "created_at",   :null => false
     t.datetime "updated_at",   :null => false
+  end
+
+  create_table "figures", :force => true do |t|
+    t.string   "doi"
+    t.text     "title"
+    t.string   "dataSet"
+    t.text     "columnHeadings"
+    t.integer  "visualisation_id"
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
+  end
+
+  add_index "figures", ["visualisation_id"], :name => "index_figures_on_visualisation_id"
+
+  create_table "visualisations", :force => true do |t|
+    t.text     "libName"
+    t.text     "libLocation"
+    t.text     "description"
+    t.integer  "minNoOfParameters"
+    t.integer  "maxNoOfParameters"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
   end
 
 end

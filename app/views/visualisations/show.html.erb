@@ -1,0 +1,30 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Libname:</b>
+  <%= @visualisation.libName %>
+</p>
+
+<p>
+  <b>Liblocation:</b>
+  <%= @visualisation.libLocation %>
+</p>
+
+<p>
+  <b>Description:</b>
+  <%= @visualisation.description %>
+</p>
+
+<p>
+  <b>Minnoofparameters:</b>
+  <%= @visualisation.minNoOfParameters %>
+</p>
+
+<p>
+  <b>Maxnoofparameters:</b>
+  <%= @visualisation.maxNoOfParameters %>
+</p>
+
+
+<%= link_to 'Edit', edit_visualisation_path(@visualisation) %> |
+<%= link_to 'Back', visualisations_path %>

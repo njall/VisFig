@@ -1,0 +1,66 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>VisFig</title>
+</head>
+
+<body>
+<div class="container">
+  <div class="starter-template">
+    <h1>VisFig</h1>
+
+    <p class="lead">Welcome to VisFig! Simple and sleek way to reproduce other's figure using your own datasets. </p>
+
+    <p> All you need is the URL to your dataset and you are ready to go! Select a visualisation, pop in a link to your dataset, and generate beautiful interactive graphs. </p>
+  </div>
+
+  <table style="width:100%">
+    <tr >
+      <th><h2 style="">Visualisation</h2></th>
+      <th><h2>Data Description</h2></th>
+    </tr>
+    <tr style="height:300px">
+      <td><h4>
+        <%= link_to "Bar Chart", visualisation_url(1)%>
+      </h4>
+        <%= image_tag 'bar_chart.png', :style => "width:300px" %>
+      </td>
+      <td class="col-lg-6">
+        <p>
+        <h5> On-screen movie kill counts for hundreds of films</h5>
+        Original dataset from: Olson, Randy (2013): On-screen movie kill counts for hundreds of films. figshare.
+        http://dx.doi.org/10.6084/m9.figshare.889719 <br/>
+        </p>
+      </td>
+    </tr>
+
+    <tr style="height:300px">
+      <td><h4><a href="figshare.html">Area Charts</a></h4>
+        <%= image_tag 'area_chart.png', :style => "width:300px" %>
+      </td>
+      <td class="col-lg-6"><p><h5>Browser market shares of a specific website, 2010</h5>
+        Original plot and dataset from <a href="http://www.highcharts.com/demo/pie-gradient"> HighCharts</a>. Have other marketing and performance data and want to visualise it? Try out VisFig and get the area chart as pretty as this one.
+        </p></td>
+    </tr>
+
+    <tr style="height:300px">
+      <td><h4><a href="figshare.html">Chart Diagram</a></h4>
+        <%= image_tag 'pie_chart.png', :style => "width:300px" %>
+      </td>
+      <td class="col-lg-6">Original plot and dataset from <a href="http://www.highcharts.com/demo/pie-gradient"> HighCharts</a>. Have other marketing and performance dataand want to visualise it? Try out VisFig and get the area chartas\
+        prettyas thisone.</td>
+    </tr>
+  </table>
+</div>
+
+
+
+<div id="footer">
+  <p>
+
+  </p>
+</div>
+
+</body>
+

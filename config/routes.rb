@@ -1,7 +1,13 @@
 VisFig::Application.routes.draw do
+  resources :figures
+
+
+  resources :visualisations
+
+
   resources :data
 
-  match '/' => 'data#index'
+  root :to => 'home#show'
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

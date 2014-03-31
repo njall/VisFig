@@ -1,0 +1,30 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Doi:</b>
+  <%= @figure.doi %>
+</p>
+
+<p>
+  <b>Title:</b>
+  <%= @figure.title %>
+</p>
+
+<p>
+  <b>Dataset:</b>
+  <%= @figure.dataSet %>
+</p>
+
+<p>
+  <b>Columnheadings:</b>
+  <%= @figure.columnHeadings %>
+</p>
+
+<p>
+  <b>Visualisation:</b>
+  <%= @figure.visualisation %>
+</p>
+
+
+<%= link_to 'Edit', edit_figure_path(@figure) %> |
+<%= link_to 'Back', figures_path %>

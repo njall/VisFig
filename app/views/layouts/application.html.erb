@@ -23,8 +23,23 @@
 
 </head>
 <body>
+<%= nav_bar :fixed => :top, :brand => "VisFig", :responsive => true do %>
+    <%= menu_group do %>
+        <%= menu_item "Home", root_path %>
+        <%= menu_divider %>
+        <%= drop_down "Visualisations" do %>
+            <%= menu_item "Bar Charts", visualisations_path %>
+        <% end %>
+        <%= menu_item "Gallery", figures_path %>
+    <% end %>
+<% end %>
 
+<%= bootstrap_flash %>
+
+<div style="margin-top: 50px">
 <%= yield %>
+</div>
 
 </body>
 </html>
+

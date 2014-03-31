@@ -1,0 +1,31 @@
+<h1>Listing figures</h1>
+
+<table>
+  <tr>
+    <th>Doi</th>
+    <th>Title</th>
+    <th>Dataset</th>
+    <th>Columnheadings</th>
+    <th>Visualisation</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @figures.each do |figure| %>
+  <tr>
+    <td><%= figure.doi %></td>
+    <td><%= figure.title %></td>
+    <td><%= figure.dataSet %></td>
+    <td><%= figure.columnHeadings %></td>
+    <td><%= figure.visualisation %></td>
+    <td><%= link_to 'Show', figure %></td>
+    <td><%= link_to 'Edit', edit_figure_path(figure) %></td>
+    <td><%= link_to 'Destroy', figure, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Figure', new_figure_path %>

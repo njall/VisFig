@@ -1,0 +1,31 @@
+<h1>Listing visualisations</h1>
+
+<table>
+  <tr>
+    <th>Libname</th>
+    <th>Liblocation</th>
+    <th>Description</th>
+    <th>Minnoofparameters</th>
+    <th>Maxnoofparameters</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @visualisations.each do |visualisation| %>
+  <tr>
+    <td><%= visualisation.libName %></td>
+    <td><%= visualisation.libLocation %></td>
+    <td><%= visualisation.description %></td>
+    <td><%= visualisation.minNoOfParameters %></td>
+    <td><%= visualisation.maxNoOfParameters %></td>
+    <td><%= link_to 'Show', visualisation %></td>
+    <td><%= link_to 'Edit', edit_visualisation_path(visualisation) %></td>
+    <td><%= link_to 'Destroy', visualisation, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Visualisation', new_visualisation_path %>
