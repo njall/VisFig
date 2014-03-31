@@ -1,6 +1,8 @@
 class FiguresController < ApplicationController
   # GET /figures
   # GET /figures.json
+  require 'open-uri'
+  require 'json'
   def index
     @figures = Figure.all
 
@@ -14,6 +16,12 @@ class FiguresController < ApplicationController
   # GET /figures/1.json
   def show
     @figure = Figure.find(params[:id])
+    if !@figure.dataSet.nil?
+      @dataset = open(@figure.dataSet).read
+      if !@dataset.nil?
+        @parsed_data = JSON.parse @dataset
+      end
+    end
 
     respond_to do |format|
       format.html # show.html.erb
@@ -40,7 +48,10 @@ class FiguresController < ApplicationController
   # POST /figures
   # POST /figures.json
   def create
-    @figure = Figure.new(params[:figure])
+    parameters = params[:figure]
+    visualisation = parameters.delete(:visualisation)
+    @figure = Figure.new(parameters)
+    @figure.visualisation = Visualisation.find(visualisation)
 
     respond_to do |format|
       if @figure.save

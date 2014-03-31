@@ -14,6 +14,9 @@ class VisualisationsController < ApplicationController
   # GET /visualisations/1.json
   def show
     @visualisation = Visualisation.find(params[:id])
+    @figure = Figure.new
+    @figure.visualisation = @visualisation
+    @figure.title = "figure of #{@visualisation.libName}"
 
     respond_to do |format|
       format.html # show.html.erb

@@ -26,5 +26,19 @@
 </p>
 
 
-<%= link_to 'Edit', edit_visualisation_path(@visualisation) %> |
-<%= link_to 'Back', visualisations_path %>
+<div class="container">
+
+
+  <%= form_for @figure do |f| %>
+    Give it a title <%= f.text_field :title %>                                                                                     <br>
+    Dataset URL: <%= f.text_field :dataSet, :value => "http://api.figshare.com/v1/articles/10.6084/m9.figshare.889719" %><br>
+    Column Headings
+      <%= f.text_field :columnHeadings %>
+      <%= f.submit 'Vis me a fig', :class => "btn btn-lg btn-success" %>
+      <%= f.hidden_field :visualisation, :value => @visualisation.id %>
+  <% end %>
+
+  <%= link_to 'Edit', edit_visualisation_path(@visualisation) %> |
+  <%= link_to 'Back', visualisations_path %>
+
+</div>

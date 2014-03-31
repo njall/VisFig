@@ -1,3 +1,104 @@
+<script type="text/javascript">
+    alert('yolo');
+    var url = <%= @figure.dataSet %>;
+
+    alert('yo');
+    plotFromFigshare(url);
+    alert('lo');
+
+    function plotFromFigshare(url) {
+        var chartOptions = {};
+
+        var fsAPI = url;//"http://api.figshare.com/v1/articles/10.6084/m9.figshare.889719";
+        $.getJSON( fsAPI, {
+            tags: "figshare",
+            tagmode: "any",
+            format: "json"
+        })
+                .done(function( data ) {
+                    var csvurl = data.items[0].files[0].download_url.replace("http://","");
+                    $.get("http://www.corsproxy.com/"+csvurl, function(csvdata) {
+
+                        var xhead = 'Year';
+                        var yhead = 'Total Body Count';
+                        var parsed = parseCSV(csvdata, xhead, yhead, true);
+
+                        var options = setupOptions("Body count in films by year", "Year", "Total Body Count");
+                        options.xAxis.categories = parsed.x;
+                        options.series[0] = parsed.y;
+
+                        var chart = new Highcharts.Chart(options);
+
+                    });
+                });
+    }
+
+    function setupOptions(title, xlabel, ylabel) {
+        var options = {
+            chart: {
+                renderTo: 'result',
+                type: 'column'
+            },
+            title: {
+                text: title
+            },
+            xAxis: {
+                categories: []
+            },
+            yAxis: {
+                title: {
+                    text: ylabel
+                }
+            },
+            series: []
+        }
+        return options;
+    }
+
+    function parseCSV(csvstring, xHeader, yHeader, aggregateY) {
+        var parsed = {};
+        var xCategories = [];
+        var ySeries = {name: yHeader, data:[]};
+
+        var data = d3.csv.parse(csvstring);
+        var nested = [];
+
+        if(aggregateY) {
+            var aggHeader = "Total_"+yHeader;
+            var rolled = {};
+            rolled[aggHeader] = "";
+            nested = d3.nest().key(function(d) { return d[xHeader]; }).sortKeys(d3.ascending).rollup(function(leaves) {
+                rolled[aggHeader] = d3.sum(leaves, function(d) {
+                    return parseFloat(d[yHeader]);
+                });
+                return rolled[aggHeader];
+            })
+                    .entries(data);
+        }
+        else {
+            $.each(d3.entries(data), function(index, value) {
+                console.log(JSON.stringify(value));
+                var barObj = {};
+                barObj.key = value.value[xHeader];
+                barObj.values = value.value[yHeader];
+                nested.push(barObj);
+            });
+        }
+
+        $.each(nested, function(index, value) {
+            xCategories.push(value.key);
+            ySeries.data.push(value.values);
+        });
+
+        parsed.x = xCategories;
+        parsed.y = ySeries;
+        console.log(JSON.stringify(parsed));
+        return parsed;
+    }
+
+
+</script>
+
 <p id="notice"><%= notice %></p>
 
 <p>
@@ -22,8 +123,12 @@
 
 <p>
   <b>Visualisation:</b>
-  <%= @figure.visualisation %>
+  <%= @figure.visualisation.libName %>
 </p>
+
+<%= @parsed_data.keys %>
+
+<%= link_to "Generated using this visualisation", @figure.visualisation %> <br>
 
 
 <%= link_to 'Edit', edit_figure_path(@figure) %> |
