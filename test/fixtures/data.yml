@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  figshare_url: MyString
+  dataset: MyText
+  uploader: MyText
+
+two:
+  figshare_url: MyString
+  dataset: MyText
+  uploader: MyText
